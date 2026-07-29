@@ -1,0 +1,21 @@
+name: CustomItems
+version: '1.0.0'
+main: com.foolsmagic.customitems.CustomItemsPlugin
+api-version: '1.21'
+author: you
+description: Fool's Magic card + a framework for custom ability items it can suppress.
+
+commands:
+  giveitem:
+    description: Give yourself or another player a registered custom item.
+    usage: /giveitem <item-id> [player]
+    permission: customitems.give
+  itemslist:
+    description: List all registered custom item ids.
+    usage: /itemslist
+    permission: customitems.give
+
+permissions:
+  customitems.give:
+    description: Allows giving custom items via command.
+    default: op

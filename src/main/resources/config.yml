@@ -1,0 +1,8 @@
+# Radius cycle (in blocks) for the Fool's Magic card, in the order right-click cycles through.
+# 0 = off (aura disabled)
+radius-cycle: [0, 5, 10, 25]
+
+messages:
+  radius-changed: "&d[Fool's Magic] &7Suppression aura set to &f%radius%"
+  radius-off: "&d[Fool's Magic] &7Suppression aura turned &fOFF"
+  ability-suppressed: "&8Your item's ability fizzles... &7(suppressed by a Fool's Magic card nearby)"
