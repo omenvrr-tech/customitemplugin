@@ -23,6 +23,25 @@
   2. Register it in `CustomItemsPlugin#onEnable`:
      `itemRegistry.register(new YourNewItem());`
   3. Done — the Fool's Magic card automatically suppresses it. No other code changes needed.
+- **Voidreaver** — legendary sword, `VoidreaverItem`. On-hit abilities (base
+  damage/speed is whatever Netherite Sword normally has - no extra stat block, per
+  spec):
+  - **Void Slash** — every 4th hit sends a wave dealing 150% of that hit's damage to
+    everything else within 4 blocks of the victim.
+  - **Life Steal V** — heals the attacker for 5% of damage dealt, every hit.
+  - **Ender's Grasp** — 20% chance per hit to reduce the victim's armor by 25% for 5s
+    (via a temporary attribute modifier).
+  - Craftable: Ender Pearl (corners) / Nether Star (top+bottom middle) / Netherite
+    Ingot (left+right middle) / **Netherite Sword** (center — substituted for the
+    non-existent "Wither Skeleton Sword"; change the `'W'` ingredient in
+    `registerVoidreaverRecipe()` if you add a real item for that slot later).
+  - Uses `OnHitAbilityItem` (a new interface, like `AbilityItem` but triggered on
+    landing a melee hit instead of right-click) — also respects Fool's Magic
+    suppression automatically.
+  - Texture is a hand-generated pixel sprite on the standard `item/handheld` model
+    (the same technique vanilla swords use — auto-extruded to real 3D depth in-hand).
+    It is NOT a hand-modeled Blockbench mesh like `demonichammer.json` is; if you want
+    that exact chunky-3D look from the reference art, that needs building in Blockbench.
 
 ## Requirements
 
@@ -56,7 +75,7 @@ show correctly.
 ## Commands
 
 - `/giveitem <item-id> [player]` — give yourself or someone else a registered item.
-  (`fools_magic`, `demonic_hammer`)
+  (`fools_magic`, `demonic_hammer`, `voidreaver`)
 - `/itemslist` — list every registered item id.
 
 Both require the `customitems.give` permission (defaults to op).

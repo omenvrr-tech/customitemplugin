@@ -17,8 +17,12 @@ public final class Keys {
     /** Stores the Fool's Magic card's current aura radius (0 = off). */
     public static NamespacedKey FOOL_RADIUS;
 
+    /** Stores how many hits the Voidreaver has landed, for the every-4th-hit Void Slash. */
+    public static NamespacedKey VOIDREAVER_HITS;
+
     public static void init(Plugin plugin) {
         ITEM_ID = new NamespacedKey(plugin, "item_id");
         FOOL_RADIUS = new NamespacedKey(plugin, "fool_radius");
+        VOIDREAVER_HITS = new NamespacedKey(plugin, "voidreaver_hits");
     }
 }
