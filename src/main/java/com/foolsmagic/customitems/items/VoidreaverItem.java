@@ -130,7 +130,7 @@ public class VoidreaverItem implements OnHitAbilityItem, Indestructible {
     }
 
     private void applyEndersGrasp(LivingEntity victim) {
-        AttributeInstance armor = victim.getAttribute(Attribute.GENERIC_ARMOR);
+        AttributeInstance armor = victim.getAttribute(Attribute.ARMOR);
         if (armor == null) return;
 
         NamespacedKey key = new NamespacedKey(plugin, "enders_grasp_" + victim.getUniqueId());
@@ -146,7 +146,7 @@ public class VoidreaverItem implements OnHitAbilityItem, Indestructible {
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (!victim.isValid()) return;
-            AttributeInstance a = victim.getAttribute(Attribute.GENERIC_ARMOR);
+            AttributeInstance a = victim.getAttribute(Attribute.ARMOR);
             if (a == null) return;
             AttributeModifier current = a.getModifier(key);
             if (current != null) a.removeModifier(current);
