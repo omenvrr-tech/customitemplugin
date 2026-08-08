@@ -18,7 +18,6 @@ import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import io.papermc.paper.event.player.PlayerArmorChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
@@ -48,32 +47,26 @@ public class CrownEffectsListener implements Listener {
         this.crownItem = crownItem;
     }
 
-    // --- +5 hearts on equip/unequip ---
+    // --- +5 hearts while worn ---
+    // Equip detection uses periodic polling (see tick(), called from CustomItemsPlugin
+    // on a repeating task) rather than an armor-change event, since that event isn't
+    // reliably part of the public API across every Paper version. applyHealthBonus/
+    // removeHealthBonus are both idempotent, so polling every second is cheap and safe.
 
-    @EventHandler
-    public void onArmorChange(PlayerArmorChangeEvent event) {
-        if (event.getSlotType() != PlayerArmorChangeEvent.SlotType.HEAD) return;
-
-        boolean wasCrown = registry.identify(event.getOldItem()) instanceof EmperorCrownItem;
-        boolean isCrown = registry.identify(event.getNewItem()) instanceof EmperorCrownItem;
-
-        if (isCrown && !wasCrown) {
-            crownItem.applyHealthBonus(event.getPlayer());
-        } else if (wasCrown && !isCrown) {
-            crownItem.removeHealthBonus(event.getPlayer());
-        }
-    }
-
-    // Reconciles the health bonus on login, in case armor was equipped outside a
-    // tracked PlayerArmorChangeEvent (e.g. loaded straight from the save file).
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+    /** Call periodically (e.g. every 20 ticks) for every online player. */
+    public void tick(Player player) {
         if (EmperorCrownItem.isWearing(player, registry)) {
             crownItem.applyHealthBonus(player);
         } else {
             crownItem.removeHealthBonus(player);
         }
+    }
+
+    // Reconciles the health bonus immediately on login too, so it's not waiting on
+    // the next poll tick.
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        tick(event.getPlayer());
     }
 
     // --- Divisive Opinions + Unshakable Presence ---

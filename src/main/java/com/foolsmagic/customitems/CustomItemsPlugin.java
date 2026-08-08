@@ -60,8 +60,17 @@ public class CustomItemsPlugin extends JavaPlugin {
                 new ItemProtectionListener(itemRegistry), this);
         getServer().getPluginManager().registerEvents(
                 new CombatAbilityListener(itemRegistry, suppressionManager), this);
-        getServer().getPluginManager().registerEvents(
-                new CrownEffectsListener(itemRegistry, emperorCrown), this);
+
+        CrownEffectsListener crownEffectsListener = new CrownEffectsListener(itemRegistry, emperorCrown);
+        getServer().getPluginManager().registerEvents(crownEffectsListener, this);
+        // Polls every online player's helmet slot once a second to keep the crown's
+        // +5 hearts bonus in sync (see CrownEffectsListener.tick() for why polling
+        // instead of an armor-change event).
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
+                crownEffectsListener.tick(player);
+            }
+        }, 20L, 20L);
 
         registerVoidreaverRecipe(voidreaver);
 
