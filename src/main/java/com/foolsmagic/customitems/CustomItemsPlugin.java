@@ -8,11 +8,15 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.foolsmagic.customitems.commands.GiveItemCommand;
+import com.foolsmagic.customitems.effects.FreezeManager;
 import com.foolsmagic.customitems.items.DemonicHammerItem;
+import com.foolsmagic.customitems.items.EmperorCrownItem;
 import com.foolsmagic.customitems.items.FoolsMagicItem;
 import com.foolsmagic.customitems.items.ItemRegistry;
+import com.foolsmagic.customitems.items.TimekeeperWatchItem;
 import com.foolsmagic.customitems.items.VoidreaverItem;
 import com.foolsmagic.customitems.listeners.CombatAbilityListener;
+import com.foolsmagic.customitems.listeners.CrownEffectsListener;
 import com.foolsmagic.customitems.listeners.ItemInteractListener;
 import com.foolsmagic.customitems.listeners.ItemProtectionListener;
 import com.foolsmagic.customitems.suppression.SuppressionManager;
@@ -42,6 +46,12 @@ public class CustomItemsPlugin extends JavaPlugin {
         VoidreaverItem voidreaver = new VoidreaverItem(this);
         itemRegistry.register(voidreaver);
 
+        FreezeManager freezeManager = new FreezeManager(this);
+        itemRegistry.register(new TimekeeperWatchItem(this, freezeManager));
+
+        EmperorCrownItem emperorCrown = new EmperorCrownItem(this);
+        itemRegistry.register(emperorCrown);
+
         suppressionManager = new SuppressionManager(itemRegistry);
 
         getServer().getPluginManager().registerEvents(
@@ -50,6 +60,8 @@ public class CustomItemsPlugin extends JavaPlugin {
                 new ItemProtectionListener(itemRegistry), this);
         getServer().getPluginManager().registerEvents(
                 new CombatAbilityListener(itemRegistry, suppressionManager), this);
+        getServer().getPluginManager().registerEvents(
+                new CrownEffectsListener(itemRegistry, emperorCrown), this);
 
         registerVoidreaverRecipe(voidreaver);
 
