@@ -42,6 +42,33 @@
     (the same technique vanilla swords use — auto-extruded to real 3D depth in-hand).
     It is NOT a hand-modeled Blockbench mesh like `demonichammer.json` is; if you want
     that exact chunky-3D look from the reference art, that needs building in Blockbench.
+- **Timekeeper's Watch** — `TimekeeperWatchItem`, real Blockbench model. Right-click:
+  freezes every other living entity within 20 blocks for 5 seconds (players: walk
+  speed set to 0; mobs: AI disabled), while you move normally. 90 second cooldown
+  (tracked per-item via a timestamp, plus a cosmetic vanilla cooldown swipe on the
+  clock icon). Freezing does **not** grant invulnerability — frozen targets can still
+  be damaged by you or anything else, they just can't act. Particles/sound play on
+  cast and around frozen targets for the duration. Uses `AbilityItem`, so it
+  automatically respects Fool's Magic suppression like everything else.
+- **Emperor's Crown** — `EmperorCrownItem`, real Blockbench model, worn in the helmet
+  slot (base: Golden Helmet, so it equips the normal vanilla way). Purely passive —
+  no right-click ability, so it's intentionally NOT suppressible by the Fool's Magic
+  card. All logic lives in `CrownEffectsListener`:
+  - **Silver Tongue** — 20% off villager trade prices while worn (temporarily patches
+    the villager's trade list on interact, restores it on close so other players
+    still see normal prices).
+  - **Divisive Opinions** — cancels Invisibility potion effects on the wearer.
+  - **Unshakable Presence** — cancels Slowness/Weakness/Nausea/Blindness/Poison/
+    Wither/Hunger/Mining Fatigue/Unluck/Darkness on the wearer (edit
+    `NEGATIVE_EFFECTS` in `CrownEffectsListener` to add/remove effects). Note: this
+    also makes the wearer immune to Timekeeper's Watch's freeze, since that uses
+    Slowness under the hood in some future revision — currently freeze uses walk
+    speed/AI directly, not a potion effect, so it is NOT blocked by this; flagging in
+    case you change the freeze implementation later.
+  - **Golden Tongue** — hostile mobs within 20 blocks can't target the wearer,
+    and creepers near the wearer won't explode.
+  - **+5 hearts** while worn, via a temporary max-health attribute modifier
+    (added/removed on equip/unequip, reconciled on login).
 
 ## Requirements
 
@@ -75,7 +102,7 @@ show correctly.
 ## Commands
 
 - `/giveitem <item-id> [player]` — give yourself or someone else a registered item.
-  (`fools_magic`, `demonic_hammer`, `voidreaver`)
+  (`fools_magic`, `demonic_hammer`, `voidreaver`, `timekeeper_watch`, `emperor_crown`)
 - `/itemslist` — list every registered item id.
 
 Both require the `customitems.give` permission (defaults to op).
